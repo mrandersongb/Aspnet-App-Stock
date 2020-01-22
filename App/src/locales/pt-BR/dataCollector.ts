@@ -1,0 +1,15 @@
+export default {
+    'dataCollector.product.label':'Produto',
+    'dataCollector.product.required':'Código do produto é obrigatório',
+    'dataCollector.product.placeholder': 'Informe o código do produto',
+    'dataCollector.description.label': 'Descrição',
+    'dataCollector.amount.label': 'Quantidade',
+    'dataCollector.amount.placeholder': 'Informe a quantidade',
+    'dataCollector.amount.required': 'Quantidade mínima é obrigatória',
+    'dataCollector.unity.label':'Unidade',
+    'dataCollector.form.submit': 'Confirmar',
+    'dataCollector.form.exit': 'Cancelar',
+    'dataCollector.ofabr.label':'Ordem de Serviço/Fabr',
+    'dataCollector.ofabr.required':'Ordem Serviço é obrigatório',
+    'dataCollector.ofabr.placeholder': 'Número da Ordem de Serviço',
+}

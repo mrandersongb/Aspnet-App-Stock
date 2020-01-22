@@ -5,8 +5,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Backend.Services;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+
+using Backend.Services;
+using System;
 
 namespace Backend
 {
@@ -47,6 +50,7 @@ namespace Backend
             })
             .AddJwtBearer(x =>
             {
+                // Habilitar em produção
                 x.RequireHttpsMetadata = false;
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
@@ -65,13 +69,18 @@ namespace Backend
         // Configura requisições HTTP 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
+            
+            // Produção
+            if (!env.IsDevelopment()){
+                DefaultFilesOptions options = new DefaultFilesOptions();
+                options.DefaultFileNames.Clear();
+                options.DefaultFileNames.Add("index.html");
+
+                app.UseDefaultFiles(options);
+                app.UseStaticFiles();
+            }else{
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
 
             app.UseRouting();
 
@@ -85,11 +94,31 @@ namespace Backend
             app.UseAuthorization();
             
             //app.UseHttpsRedirection();
-            
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
             });
+
+            
+            app.UseSpa(spa =>
+            {
+                // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                // see https://go.microsoft.com/fwlink/?linkid=864501
+
+                spa.Options.SourcePath = "App";
+
+                if (env.IsDevelopment())
+                {
+                    //spa.UseAngularCliServer(npmScript: "start");
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                    spa.Options.StartupTimeout = TimeSpan.FromSeconds(120); // Increase the timeout if angular app is taking longer to startup
+                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200"); // Use this instead to use the angular cli server
+                }
+            });
+
+
         }
     }
 }
