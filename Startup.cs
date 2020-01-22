@@ -1,20 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Backend.Services;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.IdentityModel.Logging;
 
 namespace Backend
 {
@@ -32,10 +24,9 @@ namespace Backend
         {
             // Adiciona configuração de segurança
             services.AddCors();
+
             // Adiciona controllers
             services.AddControllers();
-
-            services.AddMvc();
 
             // configurar propriedades definidas no appSettings.json
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -53,7 +44,6 @@ namespace Backend
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(x =>
             {
@@ -77,8 +67,11 @@ namespace Backend
         {
             if (env.IsDevelopment())
             {
-                //app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage();
             }
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
