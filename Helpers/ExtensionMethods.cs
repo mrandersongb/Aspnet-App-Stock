@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Backend.Models;
+using Backend.Entities.Users;
 
 namespace Backend.Helpers
 {
@@ -14,7 +14,7 @@ namespace Backend.Helpers
 
         // Método que remove a senha de um único usuário.
         public static User WithoutPassword(this User user) {
-            user.Password = null;
+            user.PasswordHash = null;
             return user;
         }
     }

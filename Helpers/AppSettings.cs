@@ -4,6 +4,6 @@
 */
     public class AppSettings
     {
-        // Palavra chave do token
+        // Palavra chave para geração do token
         public string Secret { get; set; }
     }

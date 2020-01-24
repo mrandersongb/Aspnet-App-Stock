@@ -107,7 +107,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
             return defaultDom;
           }
 
-          return <Link to={menuItemProps.path||''}>{defaultDom}</Link>;
+          return <Link to={menuItemProps.path||''}>{ defaultDom }</Link>;
         }}
 
         breadcrumbRender={(routers = []) => [
@@ -143,7 +143,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         }
 
         menuDataRender={()=> {
-          if(company){
+          if( company ) {
             return menuItems || menuDataRender;
           } else {
             return [

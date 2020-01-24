@@ -41,11 +41,12 @@ const errorHandler = (error: { response: Response }): Response => {
 };
 
 /**
- * request
+ * Requisição
  */
 const request = extend({
-  errorHandler, // 
-  credentials: 'include', // cookie
+  errorHandler, // Mensagem de erros do backend
+  credentials: 'include', // Incluir credenciais na requisição
 });
+
 
 export default request;

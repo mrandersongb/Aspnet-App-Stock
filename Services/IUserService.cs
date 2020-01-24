@@ -1,81 +1,164 @@
-/*
-    Serviços disponivéis para operações com usuários.
-*/
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
-// Gerência token jwt
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-
-using Backend.Models;
+using Backend.Entities.Users;
 using Backend.Helpers;
 
 namespace Backend.Services
 {
-
-    // Interface de serviços disponível para o usuário
     public interface IUserService
     {
         User Authenticate(string username, string password);
         IEnumerable<User> GetAll();
+        User GetById(int id);
+        User Create(User user, string password);
+        void Update(User user, string password = null);
+        void Delete(int id);
     }
-    public class UserService : IUserService {
-        // Fake Data Users 
-        private List<User> _users = new List<User>
-        { 
-            new User { Id = 1, FirstName = "Test", LastName = "User", Username = "test", Password = "test" }
-        };
 
-        // Acessa as propriedades da aplicação
-        private readonly AppSettings _appSettings;
+    public class UserService : IUserService
+    {
+        private DataContext _context;
 
-        public UserService(IOptions<AppSettings> appSettings)
+        public UserService(DataContext context)
         {
-            _appSettings = appSettings.Value;
+            _context = context;
         }
 
-        // Serviço de autenticação do usuário
         public User Authenticate(string username, string password)
         {
-            // procura na base de dados se o usuário existe
-            var user = _users.SingleOrDefault(x => x.Username == username && x.Password == password);
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+                return null;
 
-            // returna null se o usuário não existir
+            var user = _context.DPP_Usuarios.SingleOrDefault(x => x.Username == username);
+                      
+            // verifica se o usuário existe
             if (user == null)
                 return null;
 
-            // autenticado com sucesso , gera um token jwt
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[] 
-                {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
+            // verifica se a senha está correta
+            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+                return null;
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            user.Token = tokenHandler.WriteToken(token);
-
-            // remove a senha antes de retornar dados
-            user.WithoutPassword();
-            
+            // usuário autenticado com sucesso
             return user;
         }
 
-        // Devolve todos os usuário sem a senha
         public IEnumerable<User> GetAll()
         {
-            // retorna todos os usuários sem a senha
-            return _users.WithoutPasswords();
+            return _context.DPP_Usuarios;
+        }
+
+        public User GetById(int id)
+        {
+            return _context.DPP_Usuarios.Find(id);
+        }
+
+        // Cadastra um novo usuário.
+        public User Create(User user, string password)
+        {
+            // valida a seha
+            if (string.IsNullOrWhiteSpace(password))
+                throw new AppException("Senha é Obrigatória");
+
+            if (_context.DPP_Usuarios.Any(x => x.Username == user.Username))
+                throw new AppException("Usuário \"" + user.Username + "\" já existe");
+
+            byte[] passwordHash, passwordSalt;
+            CreatePasswordHash(password, out passwordHash, out passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            _context.DPP_Usuarios.Add(user);
+            _context.SaveChanges();
+
+            return user;
+        }
+
+        public void Update(User userParam, string password = null)
+        {
+            var user = _context.DPP_Usuarios.Find(userParam.Id);
+
+            if (user == null)
+                throw new AppException("Usuário não existe");
+
+            // atualiza o usuário  foi modificado
+            if (!string.IsNullOrWhiteSpace(userParam.Username) && userParam.Username != user.Username)
+            {
+                // notifica erro se o novo usuário já existe
+                if (_context.DPP_Usuarios.Any(x => x.Username == userParam.Username))
+                    throw new AppException("Usuário " + userParam.Username + " já  existe");
+
+                user.Username = userParam.Username;
+            }
+
+            // atualiza os dados do usuário se foi fornecido
+            if (!string.IsNullOrWhiteSpace(userParam.Username))
+                user.Username = userParam.Username;
+
+            //if (!string.IsNullOrWhiteSpace(userParam.LastName))
+            //user.LastName = userParam.LastName;
+
+            // atualiza a senha se foi fornecida
+            if (!string.IsNullOrWhiteSpace(password))
+            {
+                // gera o hash da senha
+                byte[] passwordHash, passwordSalt;
+                CreatePasswordHash(password, out passwordHash, out passwordSalt);
+
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;
+            }
+
+            _context.DPP_Usuarios.Update(user);
+            _context.SaveChanges();
+        }
+
+        // Exclui um usuário
+        public void Delete(int id)
+        {
+            var user = _context.DPP_Usuarios.Find(id);
+            if (user != null)
+            {
+                _context.DPP_Usuarios.Remove(user);
+                _context.SaveChanges();
+            }
+        }
+
+        // métodos hash privados
+        // cria o hash da senha
+        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            if (password == null) throw new ArgumentNullException("Senha");
+            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Valor não ser vazio ou conter espaços em branco.", "Senha");
+
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
+
+        private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
+        {
+            if (password == null) throw new ArgumentNullException("Senha");
+            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Valor não pode ser vazio ou espaços em branco.", "password");
+            if (storedHash.Length != 64) throw new ArgumentException("Invalid length of password hash (64 bytes expected).", "passwordHash");
+            if (storedSalt.Length != 128) throw new ArgumentException("Invalid length of password salt (128 bytes expected).", "passwordHash");
+
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < computedHash.Length; i++)
+                {
+                    if (computedHash[i] != storedHash[i]) return false;
+                }
+            }
+
+            return true;
         }
     }
 }

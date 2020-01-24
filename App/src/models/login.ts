@@ -39,6 +39,7 @@ const UserLoginModel: ModelType = {
 
   effects: {
     *login({ payload }, { call, put }) {
+
       const response = yield call(authenticate, payload);
 
       yield put({
@@ -46,18 +47,17 @@ const UserLoginModel: ModelType = {
         payload: response,
       });
 
-      // Login successfully
+      // Login efetuado com sucesso
       if (response.status === 'ok') {
+
+        // Armazena token
+
+
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
 
-        //console.log(urlParams);
-        //console.log(params);
-
         let { redirect } = params as { redirect: string };
         if (redirect) {
-
-          console.log(redirect);
 
           const redirectUrlParams = new URL(redirect);
           if (redirectUrlParams.origin === urlParams.origin) {

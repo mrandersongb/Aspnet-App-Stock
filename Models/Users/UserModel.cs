@@ -1,11 +1,11 @@
-// Dados do Usuário
-namespace Backend.Models {
-    public class User {
+namespace Backend.Models.Users
+{
+    // Define a estrutura de dados dos usuários que são retornados durante as consulta por usuários.
+  public class UserModel
+    {
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Username { get; set; }
-        public string Password { get; set; }
-        public string Token { get; set; }
     }
 }

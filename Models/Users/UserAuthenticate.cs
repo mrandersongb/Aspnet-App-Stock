@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Backend.Models
+namespace Backend.Models.Users
 {
-    public class AuthenticateModel
+    public class UserAuthenticate
     {
         [Required]
         public string Username { get; set; }
