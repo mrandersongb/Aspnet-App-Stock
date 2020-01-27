@@ -12,7 +12,7 @@ export interface UserData {
   username?: string;
   title?: string;
   group?: string;
-  identifier?: string;
+  id?: string;
 }
 
 export interface UserModelState {

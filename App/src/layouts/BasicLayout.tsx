@@ -73,13 +73,13 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
       // menu do usuário logado
       dispatch({
         type: 'menu/fetchMenu',
-        payload: login.userid
+        payload: login.id
       });
 
       // dados do usuário logado.
       dispatch({
         type: 'user/fetchCurrent',
-        payload:login.userid
+        payload:login.id
       });
       
     }

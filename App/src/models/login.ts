@@ -4,11 +4,13 @@ import { routerRedux } from 'dva/router';
 import { authenticate, unthenticate } from '../services/login';
 import { getPageQuery } from '../utils/utils';
 
-export interface StateType {
+import { UserData } from './user';
+
+export interface StateType extends UserData {
   status?: 'ok' | 'error';
-  currentAuthority: 'user' | 'guest' | 'admin' | '';
+  //currentAuthority: 'user' | 'guest' | 'admin' | '';
   // guarda a identificação do usuário logado
-  userid?:string;
+  token?: string;
 }
 
 export type Effect = (
@@ -33,8 +35,9 @@ const UserLoginModel: ModelType = {
 
   state: {
     status: undefined ,
-    currentAuthority: '',
-    userid:undefined,
+    group: '',
+    token: '',
+    id: undefined,
   },
 
   effects: {
@@ -42,16 +45,29 @@ const UserLoginModel: ModelType = {
 
       const response = yield call(authenticate, payload);
 
-      console.log(response);
+      // Acesso negado
+      if( response.status >= 401 ) {
 
-      // Armazena token
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
+        // Armazena token
+        yield put({
+          type: 'changeLoginStatus',
+          payload: { status: 'error' } 
+        });
+
+      } else {
+
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response
+        });
+
+      }
 
       // Login efetuado com sucesso
       if (response.status === 'ok') {
+
+        console.log('Redirecionando página');
+
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
 
@@ -103,11 +119,15 @@ const UserLoginModel: ModelType = {
 
     changeLoginStatus(state, { payload }) {
 
+      console.log(payload);
+
       return {
         ...state,
-        status: payload.status,
-        currentAuthority:payload.group,
-        userid: payload.identifier
+        status : payload.status ,
+        token : payload.token || '' ,
+        id : payload.id || '',
+        group: payload.group||'',
+        username: payload.username ||''
       };
     },
 

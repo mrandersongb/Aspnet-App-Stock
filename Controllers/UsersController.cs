@@ -48,7 +48,9 @@ namespace Backend.Controllers {
 
             if (user == null)
             // Devolve erro de autenticação para o usuário
-                return BadRequest(new { message = "Usuário e/ou Senha está incorreto" });
+                return Unauthorized(new {
+                    message = "Usuário e/ou Senha está incorreto" 
+                });
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -70,8 +72,10 @@ namespace Backend.Controllers {
             {
                 Id = user.Id,
                 Username = user.Username,
+                Group = user.Groups,
                 //FirstName = user.FirstName,
                 //LastName = user.LastName,
+                Status = "ok",
                 Token = tokenString
             });
         }

@@ -11,7 +11,7 @@ const codeMessage = {
   202: '202',
   204: '204',
   400: '400',
-  401: '401',
+  401: 'Usuário ou/e Senha está incorreto.',
   403: '403',
   404: '404',
   406: '406',
@@ -30,11 +30,12 @@ const errorHandler = (error: { response: Response }): Response => {
   const { response } = error;
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
+    const { status, statusText } = response;
 
     notification.error({
-      message: `Error ${status}: ${url}`,
+      message: `${status}: ${statusText}`,
       description: errorText,
+      duration: 10,
     });
   }
   return response;

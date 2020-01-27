@@ -39,14 +39,14 @@ const AuthComponent: React.FC<AuthComponentProps> = ({
   //user,
   login,
 }) => {
-
+  
   //const { currentUser } = user;
   //const { routes }:any = route;
 
   // Verifica se o usuário foi autenticado
   // e está logado.
-  const { status,currentAuthority } = login;
-  const isAuthenticated =(status == 'ok' && login.userid!== undefined);
+  const { status, token, id, group } = login;
+  const isAuthenticated =(status == 'ok' && id!== undefined && token != undefined);
 
   // Devolva lista de usuários autorizados
   // Ao acesso de rotas (menus)
@@ -54,7 +54,7 @@ const AuthComponent: React.FC<AuthComponentProps> = ({
   const authorities = route ? route.authority : ''; 
 
   //const authorities = getRouteAuthority(location.pathname, routes);
-  let Authorized = RenderAuthorize(currentAuthority);
+  let Authorized = RenderAuthorize(group||'');
 
   return (
     <Authorized

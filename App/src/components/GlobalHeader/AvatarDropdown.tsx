@@ -8,25 +8,26 @@ import router from 'umi/router';
 import { ConnectProps, ConnectState, StateType} from '@/models/connect';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
-import { UserData } from '@/models/user';
+
+//import { UserData } from '@/models/user';
 
 export interface GlobalHeaderRightProps extends ConnectProps {
-  user?: UserData;
+  //user?: UserData;
   login:StateType;
   menu?: boolean;
 }
 
 class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
 
-  componentWillMount(){
-    const { dispatch , login } = this.props;
-      if (dispatch) {
-        dispatch({
-          type: 'user/fetchUser',
-          payload: login.userid,
-        });
-      }
-  }
+  // componentWillMount(){
+  //   const { dispatch , login } = this.props;
+  //     if (dispatch) {
+  //       dispatch({
+  //         type: 'user/fetchUser',
+  //         payload: login.id,
+  //       });
+  //     }
+  // }
 
   onMenuClick = (event: ClickParam) => {
     const { key } = event;
@@ -46,13 +47,13 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
   };
 
   render(): React.ReactNode {
-    const { user = {}, menu } = this.props;
+    const { menu, login } = this.props;
 
     if (!menu) {
       return (
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={user.avatar} alt="avatar" />
-          <span className={styles.name}>{user.username}</span>
+          <Avatar size="small" className={styles.avatar} src={login.avatar} alt="avatar" />
+          <span className={styles.name}>{login.username}</span>
         </span>
       );
     }
@@ -75,11 +76,11 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
       </Menu>
     );
 
-    return user && user.username ? (
+    return login && login.username ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={user.avatar} alt="avatar" />
-          <span className={styles.name}>{user.title || user.username}</span>
+          <Avatar size="small" className={styles.avatar} src={login.avatar} alt="avatar" />
+          <span className={styles.name}>{login.title || login.username}</span>
         </span>
       </HeaderDropdown>
     ) : (

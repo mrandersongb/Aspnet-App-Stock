@@ -59,7 +59,7 @@ namespace Backend.Services
         // Cadastra um novo usuário.
         public User Create(User user, string password)
         {
-            // valida a seha
+            // valida a senha
             if (string.IsNullOrWhiteSpace(password))
                 throw new AppException("Senha é Obrigatória");
 
