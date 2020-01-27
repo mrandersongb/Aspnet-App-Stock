@@ -45,7 +45,7 @@ const errorHandler = (error: { response: Response }): Response => {
  */
 const request = extend({
   errorHandler, // Mensagem de erros do backend
-  credentials: 'include', // Incluir credenciais na requisição
+  credentials: 'include',// Incluir credenciais na requisição
 });
 
 

@@ -42,6 +42,9 @@ const UserLoginModel: ModelType = {
 
       const response = yield call(authenticate, payload);
 
+      console.log(response);
+
+      // Armazena token
       yield put({
         type: 'changeLoginStatus',
         payload: response,
@@ -49,10 +52,6 @@ const UserLoginModel: ModelType = {
 
       // Login efetuado com sucesso
       if (response.status === 'ok') {
-
-        // Armazena token
-
-
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
 

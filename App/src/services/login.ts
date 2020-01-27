@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 import { FormDataType } from '../pages/user/login/index';
 
-import api from '../../config/api.config';
+import api from '../../config/api';
 
 const API_LOGIN = `${api.url}:${api.port}/users/authenticate`;
 const API_LOGOUT = `${api.url}:${api.port}/users/unthenticate`;

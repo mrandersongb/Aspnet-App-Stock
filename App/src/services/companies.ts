@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import api from '../../config/api.config';
+import api from '../../config/api';
 
 const API_COMPANIES_ID = `${api.url}:${api.port}/users/`;
 

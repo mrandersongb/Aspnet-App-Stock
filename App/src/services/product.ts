@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-import api from '../../config/api.config';
+import api from '../../config/api';
 import { Movest, Products } from '@/models/products';
 
 const API_PRODUCTS = `${api.url}:${api.port}/billing/{company}/products`;
