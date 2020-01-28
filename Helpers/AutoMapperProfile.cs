@@ -9,6 +9,7 @@ namespace Backend.Helpers
         public AutoMapperProfile()
         {
             CreateMap<User, UserModel>();
+            CreateMap<UserModules, UserModulesModel>();
             CreateMap<RegisterModel, User>();
             //CreateMap<UpdateModel, User>();
         }

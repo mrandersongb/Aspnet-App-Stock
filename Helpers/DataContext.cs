@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
 using Backend.Entities.Users;
+using Backend.Entities.Menu;
 
 namespace Backend.Helpers
 {
@@ -28,5 +29,9 @@ namespace Backend.Helpers
         // Tabela de Usuários
         // Nome da Tabela deve ser o mesmo da tabela no banco de dados.
         public DbSet<User> DPP_Usuarios { get; set; }
+
+        public DbSet<UserModules> DPP_UsuarioModulos { get; set; }
+
+        public DbSet<Modules> DPP_Modulos { get;set; }
     }
 }

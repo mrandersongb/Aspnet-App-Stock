@@ -2,25 +2,20 @@ using System.Collections.Generic;
 
 namespace Backend.Entities.Menu {
     // Menu autorizados para cada usuário
-    public class Menu {
+    public class MenuAuth {
         public List<MenuItem> Itens { get; set; }
 
     }
 
     // Menu Módulos ex: Faturamento 
     public class MenuItem : MenuBase {
-
-        //public string locale { get; set; }
-        //public List<SubMenuItem> subMenuItem { get; set; }
         public List<SubMenuItem> children { get; set; }
     }
 
 
     // Menu Manutenção / Cadastro / Relatório
     public class SubMenuItem : MenuBase {
-
         public bool hideChildrenInMenu { get; set; }
-        //public List<SubMenuItemChildren> subMenuItemChildren { get; set; }
         public List<SubMenuItemChildren> children { get; set; }
     }
 

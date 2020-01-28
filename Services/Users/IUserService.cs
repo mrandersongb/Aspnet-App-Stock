@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Backend.Entities.Users;
 using Backend.Helpers;
 
-namespace Backend.Services
+namespace Backend.Services.Users
 {
     public interface IUserService
     {

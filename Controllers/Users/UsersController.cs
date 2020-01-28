@@ -11,7 +11,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
 using Backend.Helpers;
-using Backend.Services;
+using Backend.Services.Users;
 using Backend.Entities.Users;
 using Backend.Models.Users;
 
