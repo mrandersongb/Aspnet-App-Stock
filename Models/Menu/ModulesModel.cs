@@ -1,9 +1,7 @@
 
+namespace Backend.Models.Menu {
 
-
-namespace Backend.Entities.Menu {
-
-    public class Modules {
+    public class ModulesModel {
         public int Id { get; set; }
         public string  Descricao { get; set; }
         public string Path { get; set; }

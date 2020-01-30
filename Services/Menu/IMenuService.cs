@@ -6,7 +6,6 @@ using Backend.Helpers;
 using Backend.Entities.Menu;
 
 namespace Backend.Services.Menu {
-
     // Interface para o menu
     public interface IMenuService
     {
@@ -16,11 +15,19 @@ namespace Backend.Services.Menu {
     {
         // acesso a base de dados
         private DataContext _context = null;
-        private ModuleService _moduleService;
+        private ModuleService _moduleService = null;
+        private ScreenService _screenService = null;
 
-        public MenuService(DataContext context, ModuleService moduleService) {
+        public MenuService(
+            DataContext context 
+            //ModuleService moduleService,
+            //ScreenService screenService
+            
+        ) {
             this._context = context;
-            this._moduleService = moduleService;
+            this._moduleService =  new ModuleService(_context);
+            this._screenService = new ScreenService(_context);
+            //this._screenService = screenService;
         }
 
         // Consulta lista de menus autorizados por usuário
@@ -39,6 +46,22 @@ namespace Backend.Services.Menu {
 
             // se caso não existir módulo cadastrado para o usuário
             if(userModules == null || userModules.Count() == 0) {
+
+                menu = new MenuAuth();
+                    menu.Itens = new List<MenuItem>();
+
+                    menu.Itens.Add(new MenuItem
+                    {
+                        path = "/",
+                    });
+
+                    menu.Itens.Add(new MenuItem
+                    {
+                        name = "Deslogar",
+                        path = "/user/logout",
+                        icon = "logout"
+                    });
+
                return menu; 
             }
 
@@ -73,7 +96,7 @@ namespace Backend.Services.Menu {
                     if( module != null ) {
 
                         menu.Itens.Add(new MenuItem {
-                            id = module.Id_Modulo,
+                            id = module.Id,
                             name = module.Descricao == null ? "" : module.Descricao,
                             path = module.Path == null ? "" : module.Path,
                             icon = module.Icone == null ? "" : module.Icone
@@ -88,22 +111,99 @@ namespace Backend.Services.Menu {
             foreach(var m in menu.Itens){
 
                 // join DPP_Usuarios e DPPTelas               
-
                 string[] category = new string []{"M","C","R"};
 
                 // Cada módulo possui 3 categorias
                 // Manutenção,Cadastro e Relatórios
                 foreach (var c in category) {
 
-                    var categoryModules = userModules.FirstOrDefault(
+                    // Filtra as telas por módulo
+                    var categoryModules = userModules.Where(
+                        userModules => userModules.Id_Modulo == m.id
+                    ).ToList();
+
+                    // Consulta telas liberadas do módulo
+                    // E filtra por categoria
+                    if( categoryModules != null){
+
+                        // lista de itens do menu (categorias)
+                        m.children = new List<SubMenuItem>();
+
+                        switch (c) {
+                            case "M":
+                                m.children.Add(new SubMenuItem {
+                                    name = "Manutenção",
+                                    path = $"{m.path}/maintenance",
+                                    icon = m.icon,
+                                });
+
+                                break;
+                            case "C":
+                                m.children.Add(new SubMenuItem {
+                                    name = "Cadastro",
+                                    path = $"{m.path}/register",
+                                    icon = m.icon,
+                                });
+
+                                break;
+                            case "R":
+                                m.children.Add(new SubMenuItem {
+                                    name = "Relatórios",
+                                    path = $"{m.path}/reports",
+                                    icon = m.icon,
+                                });
+
+                                break;
+                        }
+
                         
-                    );
+                        m.children[m.children.Count - 1].hideChildrenInMenu = true;
+                        m.children[m.children.Count - 1].children = new List<SubMenuItemChildren>();
 
+                        // rota de menu
+                        m.children[m.children.Count - 1].children.Add(new SubMenuItemChildren {
+                            name = "Menu",
+                            path = $"{m.children[m.children.Count - 1].path}/menu",
+                            exact = true
+                        });
 
+                        // lista Modulo / tela / categoria
+                        foreach(var cm in categoryModules) {
+
+                            var screenInfo = _screenService.GetScreen(cm.Id_Modulo, cm.Id_Tela);
+
+                            if( screenInfo != null ) {
+                                // Tela faz parte da categoria atual
+                                if( screenInfo.Categoria == c) {
+
+                                    if (screenInfo.Id != 0)
+                                    {
+                                        // Lista de telas correspodente a cada categoria do menu
+                                        m.children[m.children.Count - 1].
+                                            children.Add(new SubMenuItemChildren {
+                                                id = screenInfo.Id,
+                                                name = screenInfo.Nome == null ? "" : screenInfo.Nome,
+                                                path = screenInfo.Rota == null ? "" : screenInfo.Rota,
+                                                title = screenInfo.Titulo == null ? "" : screenInfo.Titulo,
+                                                description = screenInfo.Descricao == null ? "" : screenInfo.Descricao,
+                                                tag = screenInfo.Tag == null ? "" : screenInfo.Tag,
+                                                exact = true
+
+                                            }); 
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
+            }
 
-
-            }                            
+            // Adiciona a opção de logon no menu de módulos
+            menu.Itens.Add(new MenuItem {
+                        name = "Deslogar",
+                        path = "/logout",
+                        icon = "logout"
+                    });                            
 
 
             return menu;

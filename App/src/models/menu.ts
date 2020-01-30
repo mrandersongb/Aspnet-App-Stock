@@ -49,10 +49,10 @@ const MenuModel: MenuModelType = {
 
     // Anderson: 29.10.2019
     // Devolve o menu do usuário
-    *fetchMenu({payload},{call,put}){
-        
+    *fetchMenu({ payload },{ call,put }){
+
         const response = yield call(fetchMenu,payload);
-        
+
         yield put({
           type: 'saveStateMenu',
           payload: { items : response },
@@ -74,6 +74,7 @@ const MenuModel: MenuModelType = {
   reducers: {
     // Salva o estado do menu atual.
     saveStateMenu(state,{ payload }) {
+
       return {
         ...state,
         items: payload.items,

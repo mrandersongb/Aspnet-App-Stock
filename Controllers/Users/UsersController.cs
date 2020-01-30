@@ -61,7 +61,9 @@ namespace Backend.Controllers {
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature
+                )
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
@@ -102,10 +104,12 @@ namespace Backend.Controllers {
         }
 
         // Informaçoes de um único usuário
-        // api/users/id
+        // api/users/{id}
         [HttpGet("{id}")]
         public IActionResult GetUser(int id) {
+            
             var user = _userService.GetById(id);
+
             return Ok(user);
         }
 

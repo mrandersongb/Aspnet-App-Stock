@@ -22,7 +22,7 @@ namespace Backend.Services.Menu {
         public Modules GetModule(int id) {
 
             var module = _context.DPP_Modulos.FirstOrDefault(
-                m => m.Id_Modulo == id
+                m => m.Id == id
             );
 
             return module;

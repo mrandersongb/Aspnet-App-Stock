@@ -57,7 +57,7 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
 //};
 
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
-  const { dispatch, children, settings, login, menuItems,companies  } = props;
+  const { dispatch, children, settings, login, menuItems, companies  } = props;
 
   const { company } = companies;
 
@@ -107,7 +107,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
             return defaultDom;
           }
 
-          return <Link to={menuItemProps.path||''}>{ defaultDom }</Link>;
+          return <Link to={menuItemProps.path || ''}>{ defaultDom }</Link>;
         }}
 
         breadcrumbRender={(routers = []) => [
@@ -139,20 +139,29 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
               href: ''
             }
           ]}
+
           copyright={"2019"}  />
         }
 
         menuDataRender={()=> {
+
+          console.log(company)
+
           if( company ) {
+
             return menuItems || menuDataRender;
+
           } else {
+
             return [
               // Anderson: 05.11.2019
               // Força o usuário há escolher pelo menos uma empresa.
               menuItems[0],
               menuItems[menuItems.length - 1]
             ];
+
           }
+
         }}
 
         formatMessage={formatMessage}
@@ -163,6 +172,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
       >
 
         { children }
+
       </ProLayout>
     </>
   );

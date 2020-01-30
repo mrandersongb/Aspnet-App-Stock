@@ -66,8 +66,6 @@ const UserLoginModel: ModelType = {
       // Login efetuado com sucesso
       if (response.status === 'ok') {
 
-        console.log('Redirecionando página');
-
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
 
@@ -118,8 +116,6 @@ const UserLoginModel: ModelType = {
   reducers: {
 
     changeLoginStatus(state, { payload }) {
-
-      console.log(payload);
 
       return {
         ...state,

@@ -32,6 +32,9 @@ namespace Backend.Helpers
 
         public DbSet<UserModules> DPP_UsuarioModulos { get; set; }
 
-        public DbSet<Modules> DPP_Modulos { get;set; }
+        public DbSet<Modules> DPP_Modulos { get; set; }
+
+        public DbSet<Screen> DPP_Telas { get; set; }
+
     }
 }

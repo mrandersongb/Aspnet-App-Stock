@@ -1,5 +1,5 @@
 
-namespace Backend.Entities.Users {
+namespace Backend.Entities.Menu {
 
     public class UserModules {
 

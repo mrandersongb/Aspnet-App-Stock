@@ -1,16 +1,20 @@
 using AutoMapper;
+
 using Backend.Models.Users;
 using Backend.Entities.Users;
 
-namespace Backend.Helpers
-{
-    public class AutoMapperProfile : Profile
-    {
-        public AutoMapperProfile()
-        {
+using Backend.Models.Menu;
+using Backend.Entities.Menu;
+
+namespace Backend.Helpers {
+    public class AutoMapperProfile : Profile {
+        public AutoMapperProfile(){
+
             CreateMap<User, UserModel>();
-            CreateMap<UserModules, UserModulesModel>();
             CreateMap<RegisterModel, User>();
+            CreateMap<Modules, ModulesModel>();
+            CreateMap<MenuAuth, MenuModel>();
+            CreateMap<UserModules, UserModulesModel>();
             //CreateMap<UpdateModel, User>();
         }
     }

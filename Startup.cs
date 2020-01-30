@@ -65,7 +65,7 @@ namespace Backend
                         var user = userService.GetById(userId);
                         if (user == null)
                         {
-                            // retorna não authorizado se o usuário não estiver mais
+                            // retorna não authorizado se o usuário não existir mais
                             context.Fail("Unauthorized");
                         }
                         return Task.CompletedTask;
@@ -84,9 +84,8 @@ namespace Backend
 
             // configuração DI para serviços de aplicação
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IMenuService, MenuService>();
             services.AddScoped<IModuleService, ModuleService>();
-            
+            services.AddScoped<IMenuService, MenuService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,7 +93,6 @@ namespace Backend
         {
             // migrate any database changes on startup (includes initial db creation)
             //dataContext.Database.Migrate();
-
             app.UseRouting();
 
             // global cors policy
@@ -107,7 +105,7 @@ namespace Backend
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
 
-                        app.UseSpa(spa =>
+            app.UseSpa(spa =>
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
                 // see https://go.microsoft.com/fwlink/?linkid=864501
@@ -121,6 +119,7 @@ namespace Backend
                     //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200"); // Use this instead to use the angular cli server
                 }
             });
+
         }
     }
 }
