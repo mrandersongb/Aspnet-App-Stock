@@ -1,22 +1,29 @@
 
 
 using Backend.Entities.Billing.Products;
+using Backend.Server;
 
 namespace Backend.Services.Billing.Products {
 
+    
+
     public interface IProductService
     {
-            Products GetProduct(string Id, string company);
+        Products GetProduct(string id, string company);
     }
 
     public class ProductService: IProductService
     {
-        public ProductService(){
 
+        BillingContext _billingContext;
+
+        public ProductService(BillingContext billingContext){
+            _billingContext = billingContext;
         }
 
-        public GetProduct(string Id, string company){
-            
+        public Products GetProduct(string id, string company){
+
+            return null;
         }
         
     }

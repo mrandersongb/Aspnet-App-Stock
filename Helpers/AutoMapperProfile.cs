@@ -6,6 +6,9 @@ using Backend.Entities.Users;
 using Backend.Models.Menu;
 using Backend.Entities.Menu;
 
+using Backend.Entities.Billing.Products;
+using Backend.Models.Billing.Products;
+
 namespace Backend.Helpers {
     public class AutoMapperProfile : Profile {
         public AutoMapperProfile(){
@@ -17,7 +20,8 @@ namespace Backend.Helpers {
             CreateMap<UserModules, UserModulesModel>();
             CreateMap<UserCompanies,UserCompaniesModel>();
             CreateMap<Companies, CompaniesModel>();
-            //CreateMap<UpdateModel, User>();
+            CreateMap<Products, ProductsModel>();
+            
         }
     }
 }
