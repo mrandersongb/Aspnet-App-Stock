@@ -49,13 +49,6 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
     return Authorized.check(item.authority, localItem, null) as MenuDataItem;
   });
 
-// Anderson: 16-08-2019 
-// Função que constrói o Rodapé da Página
-// Informações sobre a Datapraxis informática
-//const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
-//return defaultDom;
-//};
-
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
   const { dispatch, children, settings, login, menuItems, companies  } = props;
 
@@ -73,15 +66,11 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
       // menu do usuário logado
       dispatch({
         type: 'menu/fetchMenu',
-        payload: login.id
+        payload: { 
+          id: login.id , token: login.token 
+        } 
       });
 
-      // dados do usuário logado.
-      dispatch({
-        type: 'user/fetchCurrent',
-        payload:login.id
-      });
-      
     }
   }, []);
 
@@ -144,21 +133,18 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         }
 
         menuDataRender={()=> {
-
-          console.log(company)
-
-          if( company ) {
-
+          
+          if(company) {
             return menuItems || menuDataRender;
 
           } else {
-
-            return [
-              // Anderson: 05.11.2019
-              // Força o usuário há escolher pelo menos uma empresa.
-              menuItems[0],
-              menuItems[menuItems.length - 1]
-            ];
+               return [
+                  // Anderson: 05.11.2019
+                  //Força o usuário há escolher pelo menos uma empresa.
+                  menuItems[0],
+                  menuItems[menuItems.length - 1]
+               ]
+             ;
 
           }
 

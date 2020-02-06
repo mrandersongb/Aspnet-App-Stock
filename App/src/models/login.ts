@@ -95,9 +95,9 @@ const UserLoginModel: ModelType = {
 
     },
 
-    *logout(_, { call,put }) {
+    *logout({ payload }, { call,put }) {
 
-      const response = yield call(unthenticate);
+      const response = yield call(unthenticate, payload);
 
       yield put({
         type: 'changeLoginStatus',

@@ -11,10 +11,12 @@ namespace Backend.Helpers {
         public AutoMapperProfile(){
 
             CreateMap<User, UserModel>();
-            CreateMap<RegisterModel, User>();
+            CreateMap<User, RegisterModel>();
             CreateMap<Modules, ModulesModel>();
             CreateMap<MenuAuth, MenuModel>();
             CreateMap<UserModules, UserModulesModel>();
+            CreateMap<UserCompanies,UserCompaniesModel>();
+            CreateMap<Companies, CompaniesModel>();
             //CreateMap<UpdateModel, User>();
         }
     }

@@ -12,9 +12,9 @@ namespace Backend.Services.Menu {
 
     public class ModuleService : IModuleService {
 
-        private DataContext _context;
+        private DPContext _context;
 
-        public ModuleService(DataContext context) {
+        public ModuleService(DPContext context) {
             _context = context;
         }
 

@@ -34,12 +34,13 @@ class CompaniesList extends React.Component<CompaniesProps>{
         // empresas do usuário logado
         dispatch({
           type: 'companies/fetchCompanies',
-          payload: login.userid
+          payload: { id: login.id, token: login.token }
         });
      
         
       }
   }
+
 
   // Anderson 31.10.2019
   // Atualiza o estado da empresa atual a ser carregada
@@ -61,31 +62,12 @@ class CompaniesList extends React.Component<CompaniesProps>{
 
     const { companies : { companies } } = this.props;
 
-    // const companies:any = [
-    //     {
-    //         id: '0001',
-    //         title: 'Campos Capachos',
-    //         description: 'Campos Ind.e Com. de Capachos.',
-    //         path: '/billing'
-    //     },
-    // ]
-
     let items:any[] ;
-    items =companies;
-
-    //console.log(companies);
-    // items = companies.map((c)=>{
-    //   return items.push({ 
-    //       id: c.idCompany, 
-    //       title : c.title , 
-    //       description: c.description ,
-    //       path: c.path
-    //     });
-    // });
+    items = companies;
 
     const { route } = this.props;
     const { name } = route;
-
+    
     return (
       <PageHeaderWrapper title={name||''} content='Selecione qualquer empresa abaixo para iniciar :'>
         <MenuModule 

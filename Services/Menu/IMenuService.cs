@@ -14,12 +14,12 @@ namespace Backend.Services.Menu {
     public class MenuService : IMenuService
     {
         // acesso a base de dados
-        private DataContext _context = null;
+        private DPContext _context = null;
         private ModuleService _moduleService = null;
         private ScreenService _screenService = null;
 
         public MenuService(
-            DataContext context 
+            DPContext context 
             //ModuleService moduleService,
             //ScreenService screenService
             
@@ -41,21 +41,23 @@ namespace Backend.Services.Menu {
             ).ToList();
 
             // Apenas os módulos
-            var modules = userModules.Distinct()
-                .Select(p => p.Id_Modulo).ToList();
+            //var modules = userModules.Distinct().ToList();
+            //.Select(p => p.Id_Modulo).ToList();
+
+            var modules = userModules.Select(p => p.Id_Modulo).Distinct().ToList();
 
             // se caso não existir módulo cadastrado para o usuário
             if(userModules == null || userModules.Count() == 0) {
 
                 menu = new MenuAuth();
-                    menu.Itens = new List<MenuItem>();
+                    menu.Items = new List<MenuItem>();
 
-                    menu.Itens.Add(new MenuItem
+                    menu.Items.Add(new MenuItem
                     {
                         path = "/",
                     });
 
-                    menu.Itens.Add(new MenuItem
+                    menu.Items.Add(new MenuItem
                     {
                         name = "Deslogar",
                         path = "/user/logout",
@@ -69,13 +71,13 @@ namespace Backend.Services.Menu {
             userModules.OrderBy(sm => sm.Id_Modulo).ThenBy(sm => sm.Id_Tela);
             
             menu = new MenuAuth();
-            menu.Itens = new List<MenuItem>();
-            menu.Itens.Clear();
+            menu.Items = new List<MenuItem>();
+            menu.Items.Clear();
 
             //========================================================================
             // Menu de Empresas
             //========================================================================
-            menu.Itens.Add(new MenuItem {
+            menu.Items.Add(new MenuItem {
                 name = "Empresas",
                 path = "/companies",
                 icon = "shop"
@@ -89,13 +91,12 @@ namespace Backend.Services.Menu {
             foreach (var i in modules) {
 
                 if( i != 0 ) {
-
                     // consulta o módulo por id
-                    var module = _moduleService.GetModule( i );
+                    var module = _moduleService.GetModule(i);
 
                     if( module != null ) {
 
-                        menu.Itens.Add(new MenuItem {
+                        menu.Items.Add(new MenuItem {
                             id = module.Id,
                             name = module.Descricao == null ? "" : module.Descricao,
                             path = module.Path == null ? "" : module.Path,
@@ -108,10 +109,13 @@ namespace Backend.Services.Menu {
             //===============================================================================
             // Adiciona as telas do usuário permitidas para cada módulo
             //===============================================================================
-            foreach(var m in menu.Itens){
+            foreach(var m in menu.Items){
 
                 // join DPP_Usuarios e DPPTelas               
                 string[] category = new string []{"M","C","R"};
+
+                // lista de itens do menu (categorias)
+                m.children = new List<SubMenuItem>();
 
                 // Cada módulo possui 3 categorias
                 // Manutenção,Cadastro e Relatórios
@@ -124,10 +128,7 @@ namespace Backend.Services.Menu {
 
                     // Consulta telas liberadas do módulo
                     // E filtra por categoria
-                    if( categoryModules != null){
-
-                        // lista de itens do menu (categorias)
-                        m.children = new List<SubMenuItem>();
+                    if( categoryModules.Count != 0){
 
                         switch (c) {
                             case "M":
@@ -199,7 +200,7 @@ namespace Backend.Services.Menu {
             }
 
             // Adiciona a opção de logon no menu de módulos
-            menu.Itens.Add(new MenuItem {
+            menu.Items.Add(new MenuItem {
                         name = "Deslogar",
                         path = "/logout",
                         icon = "logout"

@@ -82,6 +82,24 @@ namespace Backend.Controllers {
             });
         }
 
+        /*
+            Endpoint - Rota de logoff do usuário
+        */
+        //[AllowAnonymous]
+        [HttpPost("unthenticate")]
+        public IActionResult Unthenticate()
+        {
+            // logoff do usuário - devolve token vazio.
+            return Ok(new
+            {
+                Id = "",
+                Username = "",
+                Group = "",
+                Status = "",
+                Token = ""
+            });
+        }
+
         // Cadastra um novo usuário
         [AllowAnonymous]
         [HttpPost("register")]
@@ -106,11 +124,18 @@ namespace Backend.Controllers {
         // Informaçoes de um único usuário
         // api/users/{id}
         [HttpGet("{id}")]
-        public IActionResult GetUser(int id) {
-            
-            var user = _userService.GetById(id);
+        public IActionResult GetUser() {
 
-            return Ok(user);
+            try{
+
+                var id = Request.Query["id"];
+                var user = _userService.GetById(int.Parse(id));
+                return Ok(user);
+                
+            }catch(Exception err){
+                throw new Exception(err.Message);
+            }
+            
         }
 
         [HttpGet]

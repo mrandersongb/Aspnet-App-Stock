@@ -20,9 +20,9 @@ namespace Backend.Services.Users
 
     public class UserService : IUserService
     {
-        private DataContext _context;
+        private DPContext _context;
 
-        public UserService(DataContext context)
+        public UserService(DPContext context)
         {
             _context = context;
         }

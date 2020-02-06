@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { ConnectState,ConnectProps, Loading } from '@/models/connect';
+import { ConnectState,ConnectProps, Loading, StateType } from '@/models/connect';
 import { Dispatch } from 'redux';
 import { Spin } from 'antd';
 
@@ -9,6 +9,7 @@ import styles from './style.less';
 interface DispatchProps extends ConnectProps {
      loading:Loading
      dispatch:Dispatch;
+     login:StateType;
 };
 
 // Anderson: 05-09-2019
@@ -17,10 +18,30 @@ class Logout extends React.Component<DispatchProps>{
 
   DoLogout = (dispatch:Dispatch) => {
 
+    const { login } = this.props;
+
     //Dispara um Action de Logout para o model Login.
     if(dispatch){
+
+      // Zera o estado da aplicação
+      dispatch({
+        type: 'companies/saveStateCompanies',
+        payload: {
+          companies: [],
+          company: {}
+        },
+      })
+
+      dispatch({
+        type: 'menu/saveStateMenu',
+        payload: { items : [] }
+      })
+
       dispatch({
           type: 'login/logout',
+          payload: {
+            token: login.token
+          }
         },
       );  
     }
@@ -57,6 +78,7 @@ class Logout extends React.Component<DispatchProps>{
 
 // Conecta Componente Logout ao Model Login
 //export default Logout;
-export default connect(({loading}:ConnectState) =>({
-    loading
+export default connect(({loading, login}:ConnectState) =>({
+    loading,
+    login
   }))(Logout);

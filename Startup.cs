@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
+using Backend.Server;
 using Backend.Helpers;
 using Backend.Services.Users;
 using Backend.Services.Menu;
@@ -34,7 +35,8 @@ namespace Backend
         {
             // use sql server db in production and sqlite db in development
             //if (_env.IsProduction())
-            services.AddDbContext<DataContext>();
+            services.AddDbContext<DPContext>();
+            services.AddDbContext<DataPlusContext>();
             //else
             //services.AddDbContext<DataContext, SqliteDataContext>();
 
@@ -86,10 +88,11 @@ namespace Backend
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IModuleService, ModuleService>();
             services.AddScoped<IMenuService, MenuService>();
+            services.AddScoped<ICompaniesService, CompaniesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext dataContext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // migrate any database changes on startup (includes initial db creation)
             //dataContext.Database.Migrate();

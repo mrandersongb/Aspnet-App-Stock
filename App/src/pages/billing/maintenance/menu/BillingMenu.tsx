@@ -18,13 +18,14 @@ const BillingMenu: React.FC<MenuProps> = (props:any) => {
   filterRoutes = [];
 
   const menuDataRender = (menuList: any[]) => {
-    if(menuList !== null){
+    if(menuList){
       menuList.map(item => {
         if('children' in item){
           menuDataRender(item.children);
         }else {
-        if(item.id !== null)
-          filterRoutes.push(item);
+
+          if(item.id !== 0)
+            filterRoutes.push(item);
         }
       });
     }

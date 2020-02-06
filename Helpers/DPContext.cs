@@ -11,11 +11,14 @@ using Backend.Entities.Menu;
 
 namespace Backend.Helpers
 {
-    public class DataContext : DbContext
+
+    // Gerencia conexão com a base Dataplus Parâmetros
+    // Avaliar: criar uma única base de dados
+    public class DPContext : DbContext
     {
         protected readonly IConfiguration Configuration;
 
-        public DataContext(IConfiguration configuration)
+        public DPContext(IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -35,6 +38,8 @@ namespace Backend.Helpers
         public DbSet<Modules> DPP_Modulos { get; set; }
 
         public DbSet<Screen> DPP_Telas { get; set; }
+        
+        public DbSet<UserCompanies> DPP_UsuarioEmpresas { get; set; }
 
     }
 }

@@ -4,7 +4,7 @@ namespace Backend.Models.Menu {
 
     // Menu autorizados para cada usuário
     public class MenuModel {
-        public List<MenuItem> Itens { get; set; }
+        public List<MenuItem> Items { get; set; }
     }
 
     // Menu Módulos ex: Faturamento 

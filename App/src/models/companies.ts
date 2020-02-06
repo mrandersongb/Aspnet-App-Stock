@@ -7,7 +7,7 @@ import { fetchCompanies } from '@/services/companies';
 // Componente possivelmente global
 export interface Companies { 
     idCompany:string;
-    idUser:string;
+    idUser:Number;
     title:string;
     description: string;
     path:string;

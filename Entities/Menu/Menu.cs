@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Backend.Entities.Menu {
     // Menu autorizados para cada usuário
     public class MenuAuth {
-        public List<MenuItem> Itens { get; set; }
+        public List<MenuItem> Items { get; set; }
 
     }
 

@@ -15,9 +15,9 @@ namespace Backend.Services.Menu {
 
     public class ScreenService : IScreenService {
 
-        private DataContext _context;
+        private DPContext _context;
 
-        public ScreenService (DataContext context) {
+        public ScreenService (DPContext context) {
             _context = context;
         }
 
@@ -33,7 +33,7 @@ namespace Backend.Services.Menu {
         // Consulta informações da tela
         public Screen GetScreen(int IdModule,int IdScreen) {
 
-            var screenData = _context.DPP_Telas.FirstOrDefault(
+            var screenData = _context.DPP_Telas.First(
                 screen => screen.Id_Modulo == IdModule && screen.Id == IdScreen
             );
 
