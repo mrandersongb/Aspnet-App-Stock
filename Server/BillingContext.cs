@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 using Backend.Entities.Billing.Products;
+using Backend.Entities.Billing.Stock;
 
 namespace Backend.Server
 {
@@ -27,8 +28,9 @@ namespace Backend.Server
             options.UseSqlServer(Configuration.GetConnectionString("NF"));   
         }
 
-        // Empresas
-        // Nome da Tabela deve ser o mesmo da tabela no banco de dados.
-        public DbSet<Products> ESProd { get; set; }
+        // Produtos
+        public DbSet<Product> esprod { get; set; }
+        // Movest
+        public DbSet<MoveStock> movest { get;set; }
     }
 }

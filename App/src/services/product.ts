@@ -3,9 +3,8 @@ import request from '@/utils/request';
 import api from '../../config/api';
 import { Movest, Products } from '@/models/products';
 
-const API_PRODUCTS = `${api.url}:${api.port}/billing/{company}/products`;
-const API_PRODUCT = `${api.url}:${api.port}/billing/{company}/saveProduct`;
-const API_PRODUCT_ID= `${api.url}:${api.port}/billing`;
+const API_PRODUCTS = `${api.url}:${api.port}/products/{company}`;
+const API_PRODUCT_ID = `${api.url}:${api.port}/products`;
 
 const API_MOVEST = `${api.url}:${api.port}/billing`;
 
@@ -14,14 +13,25 @@ export async function fetchProducts(): Promise<any> {
 }
 
 export async function saveProduct(params: Products) {
-  return request(API_PRODUCT, {
+  return request(API_PRODUCTS, {
     method: 'POST',
     data: params,
   });
 }
 
-export async function fetchProduct({idCompany,product}:any): Promise<Products> {
-  return request(`${API_PRODUCT_ID}/${idCompany}/fetchProduct/${product}`);
+// Buscar um produto pelo código + empresa
+export async function fetchProduct(
+    {company,product, token}:{company:string,product:string,token:string}
+  ): Promise<Products> {
+
+  const tokenFormat = `Bearer ${token}`
+
+  return request(`${API_PRODUCT_ID}/${company}/${product}`, { 
+      headers: {
+        authorization: tokenFormat
+      }
+
+  });
 }
 
 /**

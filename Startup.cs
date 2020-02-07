@@ -1,3 +1,5 @@
+using System;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -5,17 +7,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
-using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using AutoMapper;
 
 using Backend.Server;
 using Backend.Helpers;
 using Backend.Services.Users;
 using Backend.Services.Menu;
+
+using Backend.Services.Billing.Products;
+using Backend.Services.Billing.Stock;
 
 namespace Backend
 {
@@ -37,6 +40,7 @@ namespace Backend
             //if (_env.IsProduction())
             services.AddDbContext<DPContext>();
             services.AddDbContext<DataPlusContext>();
+            services.AddDbContext<BillingContext>();
             //else
             //services.AddDbContext<DataContext, SqliteDataContext>();
 
@@ -89,6 +93,8 @@ namespace Backend
             services.AddScoped<IModuleService, ModuleService>();
             services.AddScoped<IMenuService, MenuService>();
             services.AddScoped<ICompaniesService, CompaniesService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IMoveStockService, MoveStockService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,16 +116,12 @@ namespace Backend
 
             app.UseSpa(spa =>
             {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
                 spa.Options.SourcePath = "App";
 
                 if (env.IsDevelopment())
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
-                    spa.Options.StartupTimeout = TimeSpan.FromSeconds(120); // Increase the timeout if angular app is taking longer to startup
-                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200"); // Use this instead to use the angular cli server
+                    spa.Options.StartupTimeout = TimeSpan.FromSeconds(120);
                 }
             });
 

@@ -9,6 +9,9 @@ using Backend.Entities.Menu;
 using Backend.Entities.Billing.Products;
 using Backend.Models.Billing.Products;
 
+using Backend.Models.Billing.Stock;
+using Backend.Entities.Billing.Stock;
+
 namespace Backend.Helpers {
     public class AutoMapperProfile : Profile {
         public AutoMapperProfile(){
@@ -20,8 +23,8 @@ namespace Backend.Helpers {
             CreateMap<UserModules, UserModulesModel>();
             CreateMap<UserCompanies,UserCompaniesModel>();
             CreateMap<Companies, CompaniesModel>();
-            CreateMap<Products, ProductsModel>();
-            
+            CreateMap<Product, ProductsModel>();
+            CreateMap<MoveStock, MoveStockModel>();
         }
     }
 }

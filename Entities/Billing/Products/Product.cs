@@ -1,9 +1,13 @@
+using System.ComponentModel.DataAnnotations;
 
-namespace Backend.Models.Billing.Products {
-    public class ProductsModel {
+namespace Backend.Entities.Billing.Products
+{
+    public class Product {
+        [Key]
         public string Codigo { get;set; }
         public string Descricao { get;set; }
         public string Unid { get;set; }
         public string Empresa { get;set; }
     }
+    
 }

@@ -13,6 +13,7 @@ export interface Products {
   code?: string;
   description?: string;
   unity?:string;
+  company?:string;
 }
 
 // Anderson: 08-10-2019
@@ -66,8 +67,8 @@ const ProductModel: ProductModelType = {
 
     // Anderson: 03.10.2019
     // Busca todos os produtos
-    *fetch(_, { call, put }) {
-      const response = yield call(fetchProducts);
+    *fetch({ payload }, { call, put }) {
+      const response = yield call(fetchProducts,payload);
 
       yield put({
         type: 'save',

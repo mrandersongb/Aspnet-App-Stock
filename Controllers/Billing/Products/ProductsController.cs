@@ -1,16 +1,11 @@
 // Gerência rotas do usuário : autenticação , cadastro , etc.
 using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.Extensions.Options;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
 using Backend.Helpers;
+using Backend.Entities.Billing.Products;
+using Backend.Services.Billing.Products;
 
 namespace Backend.Controllers {
 
@@ -18,58 +13,40 @@ namespace Backend.Controllers {
     [ApiController]
     [Route("[Controller]")]
     public class ProductsController : ControllerBase {
-
-        private IMapper _mapper;
-        private readonly AppSettings _appSettings;
-
+        private IProductService _productService;
         public ProductsController(
-            IMapper mapper,
-            IOptions<AppSettings> appSettings)
+            IProductService productService)
         {
-            _mapper = mapper;
-            _appSettings = appSettings.Value;
-        }
-
-        // Cadastrar um novo produto
-        [AllowAnonymous]
-        [HttpPost("register")]
-        public IActionResult Register(int id , string description)
-        {
-            try
-            {
-                return Ok();
-            }
-            catch (AppException ex)
-            {
-                // returna mensagem de erro, se houver alguma exceção
-                return BadRequest(new { message = ex.Message });
-            }
+            _productService = productService;
         }
 
         // Consulta produto por Código + Empresa
-        // api/users/{id}
-        [HttpGet("{id}")]
-        public IActionResult GetProduct() {
+        // api/users/{company}/{id}
+        [HttpGet("{company}/{id}")]
+        public IActionResult GetProduct(string company, string id) {
 
             try{
-                var id = Request.Query["id"];
-                var company = Request.Query["company"];
+                var _product = _productService.GetProduct(id,company); 
+                                
+                if(_product == null){
+                    return BadRequest(new { message = "Produto não encontrado" });
+                }
 
-                //var user = _productService.GetById(int.Parse(id), company);
-                return Ok();
+                var product = new { 
+                    code = _product.Codigo ,
+                    description = _product.Descricao,
+                    unity = _product.Unid,
+                    company = _product.Empresa
+                };
+
+                return Ok( new {
+                     product , found = true , submitted = false
+                });
                 
             }catch(Exception err){
                 throw new Exception(err.Message);
             }
             
-        }
-
-        // Consulta todos os produtos por Empresa
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            //var users =  _userService.GetAll();
-            return Ok();
         }
 
     }

@@ -10,6 +10,7 @@ import styles from './style.less';
 
 import {ProductState} from '@/models/products';
 import { StateCompanies } from '@/models/companies';
+import { StateType } from '@/models/login';
 
 const { Search } = Input;
 const FormItem = Form.Item;
@@ -22,6 +23,7 @@ interface BasicFormProps extends FormComponentProps {
   history:any;
   route:any;
   companies: StateCompanies;
+  login: StateType;
 }
 
 class DataCollector extends React.Component<BasicFormProps> {
@@ -82,9 +84,10 @@ class DataCollector extends React.Component<BasicFormProps> {
    * Faz uma pesquisa pelo produto atráves do código
    */
   findProduct = () => {
-    const { dispatch, form, companies } = this.props;
+    const { dispatch, form, companies, login } = this.props;
     const { company } = companies;
     const { idCompany } = company||{idCompany:''};
+
 
     form.validateFieldsAndScroll(['product'],(err, values) => {
 
@@ -94,7 +97,11 @@ class DataCollector extends React.Component<BasicFormProps> {
 
         dispatch({
           type: 'products/fetchProduct',
-          payload:{ idCompany,product }
+          payload:{ 
+            company: idCompany,
+            product, 
+            token : login.token 
+          }
         });
 
         form.setFields({
@@ -329,16 +336,18 @@ class DataCollector extends React.Component<BasicFormProps> {
 export default Form.create<BasicFormProps>()(
   connect((
     // Models
-    { loading , products, companies }: { 
+    { loading , products, companies, login }: { 
       // States
       loading: { effects: { [key: string]: boolean }},
       products: ProductState,
-      companies: StateCompanies
+      companies: StateCompanies,
+      login: StateType
     }) => ({
         // States para Props
         finding: loading.effects['products/fetchProduct'],
         submitting: loading.effects['products/saveProduct'],
         products,
-        companies
+        companies,
+        login
   }))(DataCollector),
 );
