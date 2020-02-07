@@ -1,8 +1,11 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
 
+using Backend.Entities.Billing.Stock;
 using Backend.Models.Billing.Stock;
+using Backend.Services.Billing.Stock;
 
 namespace Backend.Controllers.Billing.Stock {
 
@@ -11,10 +14,14 @@ namespace Backend.Controllers.Billing.Stock {
     [Route("[Controller]")]
     public class MoveStockController : ControllerBase {
         private IMoveStockService _moveStockService;
+        private IMapper _mapper;
+
         public MoveStockController(
-            IMoveStockService moveStockService)
+            IMoveStockService moveStockService,
+            IMapper mapper)
         {
             _moveStockService = moveStockService;
+            _mapper = mapper;
         }
 
         // Consulta produto por Código + Empresa
@@ -23,23 +30,16 @@ namespace Backend.Controllers.Billing.Stock {
         public IActionResult Register([FromBody] MoveStockModel  moveStockModel) {
 
             try{
+                var newMoveStock = _mapper.Map<MoveStock>(moveStockModel);
 
-
-                var _product = _moveStockService.GetProduct(id,company); 
+                var _moveStock = _moveStockService.Register(newMoveStock); 
                                 
-                if(_product == null){
-                    return BadRequest(new { message = "Produto não encontrado" });
+                if(!_moveStock){
+                    return BadRequest(new { message = "Erro ao movimentar estoque" });
                 }
 
-                var product = new { 
-                    code = _product.Codigo ,
-                    description = _product.Descricao,
-                    unity = _product.Unid,
-                    company = _product.Empresa
-                };
-
                 return Ok( new {
-                     product , found = true , submitted = false
+                     found = false , submitted = true
                 });
                 
             }catch(Exception err){
