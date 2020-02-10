@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Button,Card,Form,Input,InputNumber,Empty,Divider,Spin,Result} from 'antd';
+import { Button, Card, Form, Input, InputNumber, Empty, Divider, Spin, Result } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 
 import { Dispatch } from 'redux';
@@ -8,9 +8,10 @@ import { FormComponentProps } from 'antd/es/form';
 import { connect } from 'dva';
 import styles from './style.less';
 
-import {ProductState} from '@/models/products';
+import { ProductState } from '@/models/products';
 import { StateCompanies } from '@/models/companies';
 import { StateType } from '@/models/login';
+import { MoveStockState } from '@/models/moveStock';
 
 const { Search } = Input;
 const FormItem = Form.Item;
@@ -20,43 +21,48 @@ interface BasicFormProps extends FormComponentProps {
   finding: boolean;
   dispatch: Dispatch<any>;
   products: ProductState;
-  history:any;
-  route:any;
+  history: any;
+  route: any;
   companies: StateCompanies;
+  movestock: MoveStockState;
   login: StateType;
 }
 
 class DataCollector extends React.Component<BasicFormProps> {
-
   /**
    * Envia dados da movimentação de estoque.
    */
   handleSubmit = (e: React.FormEvent) => {
-    const { dispatch, form , products, route } = this.props;
+    const { dispatch, form, products, route, companies, login } = this.props;
+
+    const { company } = companies;
+    const { idCompany } = company || { idCompany: '' };
+
     // Defini qual é o tipo de movimento (Entrada ou Saída)
-    const { tag : type } = route;
-    const { product } = products
+    const { tag: type } = route;
+    const { product } = products;
 
     e.preventDefault();
-
-    form.validateFieldsAndScroll(['amount','ofabr'],(err, values) => {
-
+    form.validateFieldsAndScroll(['amount', 'ofabr'], (err, values) => {
       const { amount, ofabr } = values;
 
       if (!err) {
-
         dispatch({
-          type: 'products/saveMovest',
+          type: 'movestock/register',
           payload: {
-            code: product.code,
-            amount,
-            ofabr,
-            type
+            movest: {
+              ...product,
+              amount,
+              ofabr,
+              type,
+              company: idCompany,
+            },
+
+            token: login.token,
+            username: login.username,
           },
         });
-        
       }
-
     });
   };
 
@@ -67,18 +73,17 @@ class DataCollector extends React.Component<BasicFormProps> {
     const { history } = this.props;
     // Volta para o menu
     history.push('/billing/maintenance/');
-  }
+  };
 
   // Limpa os dados do último produto pesquisado.
   clearProduct = () => {
-
     const { dispatch } = this.props;
-    if(dispatch){
+    if (dispatch) {
       dispatch({
         type: 'products/clearCurrentProduct',
       });
     }
-  }
+  };
 
   /**
    * Faz uma pesquisa pelo produto atráves do código
@@ -86,22 +91,19 @@ class DataCollector extends React.Component<BasicFormProps> {
   findProduct = () => {
     const { dispatch, form, companies, login } = this.props;
     const { company } = companies;
-    const { idCompany } = company||{idCompany:''};
+    const { idCompany } = company || { idCompany: '' };
 
-
-    form.validateFieldsAndScroll(['product'],(err, values) => {
-
+    form.validateFieldsAndScroll(['product'], (err, values) => {
       if (!err) {
-
         const { product } = values;
 
         dispatch({
           type: 'products/fetchProduct',
-          payload:{ 
+          payload: {
             company: idCompany,
-            product, 
-            token : login.token 
-          }
+            product,
+            token: login.token,
+          },
         });
 
         form.setFields({
@@ -111,25 +113,21 @@ class DataCollector extends React.Component<BasicFormProps> {
         });
       }
     });
+  };
 
-    
-
-  }
-
-  componentWillMount(){
+  componentWillMount() {
     this.clearProduct();
   }
 
   render() {
-    const { finding, products, submitting } = this.props;
+    const { finding, products, movestock, submitting } = this.props;
     const {
-      form: { getFieldDecorator},
+      form: { getFieldDecorator },
     } = this.props;
 
-    const { product } = products ;
-    const { found } = products ;
-    const { submitted } = products;
-    const { result  } = products;
+    const { product } = products;
+    const { found } = products;
+    const { submitted, result } = movestock;
 
     const formItemLayout = {
       labelCol: {
@@ -150,15 +148,15 @@ class DataCollector extends React.Component<BasicFormProps> {
       },
     };
 
-    const ResultNode: React.ReactNode = (<Result {...result}/>);
+    const ResultNode: React.ReactNode = <Result {...result} />;
 
     // Carrega dados do produto pesquisado.
-    const FoundProductNode :React.ReactNode = (
+    const FoundProductNode: React.ReactNode = (
       <>
         {
-         //=======================================================
-         // Código do Produto
-         //=======================================================
+          //=======================================================
+          // Código do Produto
+          //=======================================================
         }
 
         <FormItem
@@ -173,9 +171,9 @@ class DataCollector extends React.Component<BasicFormProps> {
         </FormItem>
 
         {
-         //=======================================================
-         // Descrição do Produto
-         //=======================================================
+          //=======================================================
+          // Descrição do Produto
+          //=======================================================
         }
 
         <FormItem
@@ -189,10 +187,10 @@ class DataCollector extends React.Component<BasicFormProps> {
           <span className={styles.result}>{product ? product.description : ''}</span>
         </FormItem>
 
-        { 
-         //=======================================================
-         // Unidade
-         //=======================================================
+        {
+          //=======================================================
+          // Unidade
+          //=======================================================
         }
 
         <FormItem
@@ -207,11 +205,11 @@ class DataCollector extends React.Component<BasicFormProps> {
         </FormItem>
 
         {
-         //=======================================================
-         // Quantidade
-         //=======================================================
+          //=======================================================
+          // Quantidade
+          //=======================================================
         }
-        
+
         <FormItem
           {...formItemLayout}
           label={
@@ -220,29 +218,22 @@ class DataCollector extends React.Component<BasicFormProps> {
             </span>
           }
         >
-          {getFieldDecorator('amount',{
-              rules: [
-                {
-                  required: found,
-                  message: formatMessage({ id: 'dataCollector.amount.required' }),
-                },
-              ]
-            }
-            )(
-            <InputNumber
-              min={0.01}
-              decimalSeparator=','
-              autoFocus={found}
-            />,
-          )}
-        </FormItem> 
+          {getFieldDecorator('amount', {
+            rules: [
+              {
+                required: found,
+                message: formatMessage({ id: 'dataCollector.amount.required' }),
+              },
+            ],
+          })(<InputNumber min={0.01} decimalSeparator="," autoFocus={found} />)}
+        </FormItem>
 
         {
-         //=======================================================
-         // Ordem de Fabricação
-         //=======================================================
+          //=======================================================
+          // Ordem de Fabricação
+          //=======================================================
         }
-        
+
         <FormItem
           {...formItemLayout}
           label={
@@ -251,84 +242,97 @@ class DataCollector extends React.Component<BasicFormProps> {
             </span>
           }
         >
-          {getFieldDecorator('ofabr',{
-              rules: [
-                {
-                  required: found,
-                  message: formatMessage({ id: 'dataCollector.ofabr.required' }),
-                },
-              ]
-            }
-            )(
-            <Input placeholder={formatMessage({ id: 'dataCollector.ofabr.placeholder' })} />,
+          {getFieldDecorator('ofabr', {
+            rules: [
+              {
+                required: found,
+                message: formatMessage({ id: 'dataCollector.ofabr.required' }),
+              },
+            ],
+          })(
+            <Input
+              maxLength={6}
+              placeholder={formatMessage({ id: 'dataCollector.ofabr.placeholder' })}
+            />,
           )}
         </FormItem>
       </>
     );
 
     return (
-        <Card bordered={false}>
-          <Form
-            hideRequiredMark style={{ marginTop: 8 }}
-          >
-            {
-            //=======================================================
-            // Código do Produto
-            //=======================================================
-              submitting ? '' :
-            <FormItem {...formItemLayout} label={<FormattedMessage id="dataCollector.product.label" />}>
-            {getFieldDecorator('product', {
-              rules: [
-                {
-                  required: !found,
-                  message: formatMessage({ id: 'dataCollector.product.required' }),
-                },
-              ],
+      <Card bordered={false}>
+        <Form hideRequiredMark style={{ marginTop: 8 }}>
+          {//=======================================================
+          // Código do Produto
+          //=======================================================
+          submitting ? (
+            ''
+          ) : (
+            <FormItem
+              {...formItemLayout}
+              label={<FormattedMessage id="dataCollector.product.label" />}
+            >
+              {getFieldDecorator('product', {
+                rules: [
+                  {
+                    required: !found,
+                    message: formatMessage({ id: 'dataCollector.product.required' }),
+                  },
+                ],
               })(
-                  //Anderson: 07-10-2019
-                  // Pesquisar produto
-                  <Search allowClear autoFocus={!found} enterButton onSearch={this.findProduct} 
-                      placeholder={formatMessage({ id: 'dataCollector.product.placeholder' })} />
-                )
-            }
-            </FormItem> 
-
-            }
-          
-            <Divider />
-            {
-              (finding || submitting) ? 
-                // Espera o resultado do processo.
-                <Spin size="large" style={{ marginLeft: '45%', marginRight: 8 }} /> :
-                  // Ao final de cada envio ao servidor, mostra o resultado da operação.
-                  (submitted ? ResultNode : 
-                    (found ? 
-                      // Ao final de cada pesquisa pelo produto, mostra o resultado da operação.
-                      FoundProductNode : 
-                      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-                    )
-                  )
-
-              //=======================================================
-              // Salvar / Sair
-              //=======================================================
-            }
-
-            <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
-             { found ?
-                <Button icon="save" onClick={this.handleSubmit}  
-                  type="primary" htmlType="submit" loading={submitting}
-                >
-                  <FormattedMessage id="dataCollector.form.submit" />
-                </Button>
-                : ''
-             }
-              <Button onClick={this.backToMenu}  icon="close" type="danger" style={{ marginLeft: 8 }}>
-                <FormattedMessage id="dataCollector.form.exit" />
-              </Button>
+                //Anderson: 07-10-2019
+                // Pesquisar produto
+                <Search
+                  allowClear
+                  autoFocus={!found}
+                  enterButton
+                  onSearch={this.findProduct}
+                  placeholder={formatMessage({ id: 'dataCollector.product.placeholder' })}
+                />,
+              )}
             </FormItem>
-          </Form>
-        </Card>
+          )}
+
+          <Divider />
+          {finding || submitting ? (
+            // Espera o resultado do processo.
+            <Spin size="large" style={{ marginLeft: '45%', marginRight: 8 }} />
+          ) : // Ao final de cada envio ao servidor, mostra o resultado da operação.
+          submitted ? (
+            ResultNode
+          ) : found ? (
+            // Ao final de cada pesquisa pelo produto, mostra o resultado da operação.
+            FoundProductNode
+          ) : (
+            // Produto não encontrado
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          )
+
+          //=======================================================
+          // Salvar / Sair
+          //=======================================================
+          }
+
+          <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
+            {found ? (
+              <Button
+                icon="save"
+                onClick={this.handleSubmit}
+                type="primary"
+                htmlType="submit"
+                loading={submitting}
+              >
+                <FormattedMessage id="dataCollector.form.submit" />
+              </Button>
+            ) : (
+              ''
+            )}
+            <Button onClick={this.backToMenu} icon="close" type="danger" style={{ marginLeft: 8 }}>
+              <FormattedMessage id="dataCollector.form.exit" />
+            </Button>
+          </FormItem>
+        </Form>
+      </Card>
     );
   }
 }
@@ -336,18 +340,27 @@ class DataCollector extends React.Component<BasicFormProps> {
 export default Form.create<BasicFormProps>()(
   connect((
     // Models
-    { loading , products, companies, login }: { 
+    {
+      loading,
+      products,
+      companies,
+      login,
+      movestock,
+    }: {
       // States
-      loading: { effects: { [key: string]: boolean }},
-      products: ProductState,
-      companies: StateCompanies,
-      login: StateType
-    }) => ({
-        // States para Props
-        finding: loading.effects['products/fetchProduct'],
-        submitting: loading.effects['products/saveProduct'],
-        products,
-        companies,
-        login
+      loading: { effects: { [key: string]: boolean } };
+      products: ProductState;
+      companies: StateCompanies;
+      login: StateType;
+      movestock: MoveStockState;
+    },
+  ) => ({
+    // States para Props
+    finding: loading.effects['products/fetchProduct'],
+    submitting: loading.effects['movestock/register'],
+    products,
+    companies,
+    login,
+    movestock,
   }))(DataCollector),
 );

@@ -7,12 +7,14 @@ using Backend.Entities.Billing.Stock;
 using Backend.Models.Billing.Stock;
 using Backend.Services.Billing.Stock;
 
-namespace Backend.Controllers.Billing.Stock {
+namespace Backend.Controllers.Billing.Stock
+{
 
     [Authorize]
     [ApiController]
     [Route("[Controller]")]
-    public class MoveStockController : ControllerBase {
+    public class MoveStockController : ControllerBase
+    {
         private IMoveStockService _moveStockService;
         private IMapper _mapper;
 
@@ -27,25 +29,47 @@ namespace Backend.Controllers.Billing.Stock {
         // Consulta produto por Código + Empresa
         // api/users/{company}/{id}
         [HttpPost("register")]
-        public IActionResult Register([FromBody] MoveStockModel  moveStockModel) {
+        public IActionResult Register([FromBody] MoveStockModel moveStockModel)
+        {
 
-            try{
-                var newMoveStock = _mapper.Map<MoveStock>(moveStockModel);
+            try
+            {
+                //var newMoveStock = _mapper.Map<MoveStock>(moveStockModel);
+                var _moveStock = _moveStockService.Register(new MoveStock
+                {
+                    prod = moveStockModel.prod,
+                    quant = moveStockModel.quant,
+                    valor = moveStockModel.valor,
+                    tipo = moveStockModel.tipo.Substring(0, 1),
+                    ofabr = moveStockModel.ofabr,
+                    usuario = moveStockModel.usuario,
+                    data = DateTime.Today,
+                    hora = string.Format("{0:HHMM}", DateTime.Now),
+                    empresa = moveStockModel.empresa
+                });
 
-                var _moveStock = _moveStockService.Register(newMoveStock); 
-                                
-                if(!_moveStock){
-                    return BadRequest(new { message = "Erro ao movimentar estoque" });
+                if (!_moveStock)
+                {
+                    return BadRequest(new
+                    {
+                        found = false,
+                        submitted = false,
+                        message = "Erro ao movimentar estoque"
+                    });
                 }
 
-                return Ok( new {
-                     found = false , submitted = true
+                return Ok(new
+                {
+                    found = false,
+                    submitted = true
                 });
-                
-            }catch(Exception err){
+
+            }
+            catch (Exception err)
+            {
                 throw new Exception(err.Message);
             }
-            
+
         }
 
     }
