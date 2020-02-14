@@ -1,6 +1,5 @@
 import { DefaultFooter, MenuDataItem, getMenuData, getPageTitle } from '@ant-design/pro-layout';
 import DocumentTitle from 'react-document-title';
-import Link from 'umi/link';
 import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
@@ -29,41 +28,41 @@ const UserLayout: React.SFC<UserLayoutProps> = props => {
   } = props;
   const { breadcrumb } = getMenuData(routes);
 
-  //return(<><h1>Login Screen</h1></>);
   return (
-  <>
-    <DocumentTitle
-      title={getPageTitle({
-        pathname: location.pathname,
-        breadcrumb,
-        formatMessage,
-        ...props,
-      })}
-    >
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <div className={styles.top}>
+    <>
+      <DocumentTitle
+        title={getPageTitle({
+          pathname: location.pathname,
+          breadcrumb,
+          formatMessage,
+          ...props,
+        })}
+      >
+        <div className={styles.container}>
+          <div className={styles.content}>
             <div className={styles.header}>
-              <Link to="/">
-                <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>DataPlus 2.0</span>
-              </Link>
+              <img alt="Dataplus" className={styles.logo} src={logo} />
+              <div className={styles.title_subtitle}>
+                <div className={styles.title}>DataPlus</div>
+                <div className={styles.desc}>DataPraxis Informática</div>
+              </div>
             </div>
-            <div className={styles.desc}>DataPraxis Informática</div>
+
+            {children}
           </div>
-          {children}
+          <DefaultFooter
+            links={[
+              {
+                key: 'Dataplus',
+                title: 'DataPraxis Informática',
+                blankTarget: false,
+                href: '',
+              },
+            ]}
+            copyright={'2019'}
+          />
         </div>
-        <DefaultFooter links={[
-            {
-              key:'Dataplus',
-              title: 'DataPraxis Informática',
-              blankTarget: false,
-              href: ''
-            }
-          ]}
-          copyright={"2019"}  />
-      </div>
-    </DocumentTitle>
+      </DocumentTitle>
     </>
   );
 };

@@ -1,27 +1,32 @@
 using System.Collections.Generic;
 
-namespace Backend.Entities.Menu {
+namespace Backend.Entities.Menu
+{
     // Menu autorizados para cada usuário
-    public class MenuAuth {
+    public class MenuAuth
+    {
         public List<MenuItem> Items { get; set; }
 
     }
 
     // Menu Módulos ex: Faturamento 
-    public class MenuItem : MenuBase {
+    public class MenuItem : MenuBase
+    {
         public List<SubMenuItem> children { get; set; }
     }
 
 
     // Menu Manutenção / Cadastro / Relatório
-    public class SubMenuItem : MenuBase {
+    public class SubMenuItem : MenuBase
+    {
         public bool hideChildrenInMenu { get; set; }
         public List<SubMenuItemChildren> children { get; set; }
     }
 
 
     // Menu Telas do Módulo
-    public class SubMenuItemChildren : MenuBase {
+    public class SubMenuItemChildren : MenuBase
+    {
         public bool exact { get; set; }
         public string description { get; set; }
         public string tag { get; set; }
@@ -30,7 +35,8 @@ namespace Backend.Entities.Menu {
 
 
     // Menu Base
-    public class MenuBase {
+    public class MenuBase
+    {
         public int id { get; set; }
         public string path { get; set; }
         public string name { get; set; }

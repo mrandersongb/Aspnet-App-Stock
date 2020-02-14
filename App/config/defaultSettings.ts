@@ -1,4 +1,4 @@
-import { MenuTheme  } from 'antd/es/menu';
+import { MenuTheme } from 'antd/es/menu/MenuContext';
 
 export type ContentWidth = 'Fluid' | 'Fixed';
 
@@ -36,7 +36,7 @@ export interface DefaultSettings {
   pwa: boolean;
   // Your custom iconfont Symbol script Url
   // eg：//at.alicdn.com/t/font_1039637_btcrd5co4w.js
-  // Iconfont 
+  // Iconfont
   // Usage: https://github.com/ant-design/ant-design-pro/pull/3517
   iconfontUrl: string;
   colorWeak: boolean;
@@ -54,7 +54,7 @@ export default {
   menu: {
     locale: true,
   },
-  title: 'DataPlus 2.0',
+  title: 'DataPlus',
   pwa: false,
   iconfontUrl: '',
 } as DefaultSettings;

@@ -34,7 +34,7 @@ export interface MoveStockModelType {
   };
 
   reducers: {
-    updateStateMovest: Reducer<MoveStockState>;
+    updateStateMoveStock: Reducer<MoveStockState>;
   };
 }
 
@@ -57,11 +57,11 @@ const MoveStockModel: MoveStockModelType = {
       const response = yield call(register, payload);
 
       yield put({
-        type: 'updateStateMovest',
+        type: 'updateStateMoveStock',
         payload: {
-          product: {},
+          product: { value: 0 },
           submitted: response.submitted,
-          result: response,
+          result: response.result,
         },
       });
     },
@@ -69,11 +69,10 @@ const MoveStockModel: MoveStockModelType = {
 
   reducers: {
     // Altera o estado com resultado da pesquisa.
-    updateStateMovest(state, { payload }) {
+    updateStateMoveStock(state, { payload }) {
       return {
         ...state,
         product: payload.product,
-        found: payload.found,
         submitted: payload.submitted,
         result: payload.result,
       };

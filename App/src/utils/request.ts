@@ -1,5 +1,5 @@
 /**
- * request 
+ * request
  * api: https://github.com/umijs/umi-request
  */
 import { extend } from 'umi-request';
@@ -10,8 +10,8 @@ const codeMessage = {
   201: '201',
   202: '202',
   204: '204',
-  400: '400',
-  401: 'Usuário ou/e Senha está incorreto.',
+  400: { title: 'Produto não encontrado', description: 'Verifique o código e tente novamente' },
+  401: { title: 'Falha de Autenticação', description: 'Usuário ou/e Senha está incorreto.' },
   403: '403',
   404: '404',
   406: '406',
@@ -29,15 +29,21 @@ const codeMessage = {
 const errorHandler = (error: { response: Response }): Response => {
   const { response } = error;
   if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
-    const { status, statusText } = response;
+    const errorText = codeMessage[response.status] || {
+      title: `${response.status}: ${response.statusText}`,
+      description: '',
+    };
+
+    const { status } = response;
 
     notification.error({
-      message: `${status}: ${statusText}`,
-      description: errorText,
+      //message: `${status}: ${statusText}`,
+      message: `${status}: ${errorText.title}`,
+      description: errorText.description,
       duration: 10,
     });
   }
+
   return response;
 };
 
@@ -45,9 +51,8 @@ const errorHandler = (error: { response: Response }): Response => {
  * Requisição
  */
 const request = extend({
-  errorHandler, // Mensagem de erros do backend
-  credentials: 'include',// Incluir credenciais na requisição
+  errorHandler, // Mensagem de erros vind do servidor
+  credentials: 'include', // Incluir credenciais na requisição
 });
-
 
 export default request;

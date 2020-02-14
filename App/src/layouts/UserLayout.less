@@ -35,47 +35,44 @@
   }
 }
 
-.top {
-  text-align: center;
-}
-
 .header {
-  //height: 40px;
-  //background-color: #ccc;
-  line-height: 32px;
-  a {
-    text-decoration: none;
-  }
+  display: flex;
+  //flex-direction: row;
+  box-sizing: border-box;
+  //background: red;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1%;
 }
 
 // Logo da Dataplus
 .logo {
-  height: 32px;
-  margin-right: 10px;
-  vertical-align: top;
-  //background: #ffffff;
+  height: 64px;
   border-radius: 5px;
 }
 
 // Título do Logo
 .title {
-  position: relative;
-  //top: 0px;
-  //color: @heading-color;
-  //color: #000000;
-  vertical-align: middle;
   color: rgba(0, 0, 0, 0.65);
-  font-weight: 600;
+  font-weight: bold;
   font-size: 32px;
   font-family: Avenir, 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 
 // Descrição do Logo
 .desc {
-  margin-top: 12px;
-  margin-bottom: 40px;
   color: @text-color-secondary;
   font-size: @font-size-base;
+}
+
+.title_subtitle {
+  flex-direction: column;
+  padding: 0% 1%;
+  border-left-style: dotted;
+  border-left-width: 1px;
+  border-left-color: @text-color-secondary;
+  margin-left: 0.5%;
+  //height: 64;
 }
 
 //background-image: url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg');

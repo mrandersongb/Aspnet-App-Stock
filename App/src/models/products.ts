@@ -64,7 +64,7 @@ const ProductModel: ProductModelType = {
     // Busca o produto atráves do código
     *fetchProduct({ payload }, { call, put }) {
       const response = yield call(fetchProduct, payload);
-
+      console.log('Resultado : ', response);
       yield put({
         type: 'saveStateProduct',
         payload: response,

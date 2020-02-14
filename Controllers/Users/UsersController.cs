@@ -15,14 +15,16 @@ using Backend.Services.Users;
 using Backend.Entities.Users;
 using Backend.Models.Users;
 
-namespace Backend.Controllers {
+namespace Backend.Controllers
+{
 
     [Authorize]
     [ApiController]
     [Route("[Controller]")]
-    public class UsersController : ControllerBase {
+    public class UsersController : ControllerBase
+    {
 
-         private IUserService _userService;
+        private IUserService _userService;
         private IMapper _mapper;
         private readonly AppSettings _appSettings;
 
@@ -47,9 +49,10 @@ namespace Backend.Controllers {
             var user = _userService.Authenticate(userParam.Username, userParam.Password);
 
             if (user == null)
-            // Devolve erro de autenticação para o usuário
-                return Unauthorized(new {
-                    message = "Usuário e/ou Senha está incorreto" 
+                // Devolve erro de autenticação para o usuário
+                return Unauthorized(new
+                {
+                    message = "Usuário e/ou Senha está incorreto"
                 });
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -124,24 +127,28 @@ namespace Backend.Controllers {
         // Informaçoes de um único usuário
         // api/users/{id}
         [HttpGet("{id}")]
-        public IActionResult GetUser() {
+        public IActionResult GetUser()
+        {
 
-            try{
+            try
+            {
 
                 var id = Request.Query["id"];
                 var user = _userService.GetById(int.Parse(id));
                 return Ok(user);
-                
-            }catch(Exception err){
+
+            }
+            catch (Exception err)
+            {
                 throw new Exception(err.Message);
             }
-            
+
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users =  _userService.GetAll();
+            var users = _userService.GetAll();
             return Ok(users);
         }
 

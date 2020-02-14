@@ -29,7 +29,7 @@ export async function register({
       empresa: movest.company,
       prod: movest.code,
       quant: movest.amount,
-      valor: 0,
+      valor: movest.value,
       tipo: movest.type,
       ofabr: movest.ofabr,
       usuario: username,

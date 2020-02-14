@@ -7,6 +7,8 @@ using Backend.Entities.Billing.Stock;
 using Backend.Models.Billing.Stock;
 using Backend.Services.Billing.Stock;
 
+using Backend.Utils;
+
 namespace Backend.Controllers.Billing.Stock
 {
 
@@ -52,16 +54,27 @@ namespace Backend.Controllers.Billing.Stock
                 {
                     return BadRequest(new
                     {
-                        found = false,
                         submitted = false,
-                        message = "Erro ao movimentar estoque"
+                        result = new Result
+                        {
+                            status = "error",
+                            title = "Atenção: Falha na movimentação de estoque",
+                            subTitle = "Não foi possível registrar um novo movimento."
+                        }
                     });
                 }
 
+                var result = new
+                {
+                    status = "success",
+                    title = "Operação concluída com sucesso",
+                    subTitle = "Registrado novo movimento no estoque."
+                };
+
                 return Ok(new
                 {
-                    found = false,
-                    submitted = true
+                    submitted = true,
+                    result = result
                 });
 
             }

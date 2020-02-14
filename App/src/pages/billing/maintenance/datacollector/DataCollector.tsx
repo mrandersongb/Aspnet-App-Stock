@@ -11,7 +11,7 @@ import styles from './style.less';
 import { ProductState } from '@/models/products';
 import { StateCompanies } from '@/models/companies';
 import { StateType } from '@/models/login';
-import { MoveStockState } from '@/models/moveStock';
+import { MoveStockState } from '@/models/movestock';
 
 const { Search } = Input;
 const FormItem = Form.Item;
@@ -62,6 +62,8 @@ class DataCollector extends React.Component<BasicFormProps> {
             username: login.username,
           },
         });
+
+        this.clearProduct();
       }
     });
   };
@@ -85,6 +87,20 @@ class DataCollector extends React.Component<BasicFormProps> {
     }
   };
 
+  // Limpa os dados da última movimentação de estoque
+  clearMovestock = () => {
+    const { dispatch } = this.props;
+    if (dispatch) {
+      dispatch({
+        type: 'movestock/updateStateMoveStock',
+        payload: {
+          submitted: false,
+          result: {},
+        },
+      });
+    }
+  };
+
   /**
    * Faz uma pesquisa pelo produto atráves do código
    */
@@ -97,6 +113,9 @@ class DataCollector extends React.Component<BasicFormProps> {
       if (!err) {
         const { product } = values;
 
+        this.clearProduct();
+        this.clearMovestock();
+
         dispatch({
           type: 'products/fetchProduct',
           payload: {
@@ -106,6 +125,7 @@ class DataCollector extends React.Component<BasicFormProps> {
           },
         });
 
+        // limpa campo de pesquisa
         form.setFields({
           product: {
             value: '',
@@ -117,6 +137,7 @@ class DataCollector extends React.Component<BasicFormProps> {
 
   componentWillMount() {
     this.clearProduct();
+    this.clearMovestock();
   }
 
   render() {
