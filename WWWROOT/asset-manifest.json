@@ -1,0 +1,22 @@
+{
+  "/vendors.css": "/vendors.437a5221.chunk.css",
+  "/vendors.js": "/vendors.e186cb13.async.js",
+  "/layouts__BasicLayout.css": "/layouts__BasicLayout.1ce9e8e2.chunk.css",
+  "/layouts__BasicLayout.js": "/layouts__BasicLayout.6358cf7a.async.js",
+  "/layouts__UserLayout.css": "/layouts__UserLayout.bd7d07ef.chunk.css",
+  "/layouts__UserLayout.js": "/layouts__UserLayout.a159c4ab.async.js",
+  "/p__billing__maintenance__BillingMain.css": "/p__billing__maintenance__BillingMain.c9f5c9e0.chunk.css",
+  "/p__billing__maintenance__BillingMain.js": "/p__billing__maintenance__BillingMain.a2ec6b89.async.js",
+  "/p__companies__Companies.js": "/p__companies__Companies.cda4ffe2.async.js",
+  "/p__exception__403.js": "/p__exception__403.a8155d1b.async.js",
+  "/p__user__login.css": "/p__user__login.b1d6ca1c.chunk.css",
+  "/p__user__login.js": "/p__user__login.8e8ba0e5.async.js",
+  "/p__user__logout__Logout.css": "/p__user__logout__Logout.1a4d2a93.chunk.css",
+  "/p__user__logout__Logout.js": "/p__user__logout__Logout.bb736f4b.async.js",
+  "/umi.css": "/umi.7548d11a.css",
+  "/umi.js": "/umi.91715869.js",
+  "/icons/icon-128x128.png": "/icons/icon-128x128.png",
+  "/index.html": "/index.html",
+  "/logo.png": "/logo.png",
+  "/static/dataplus_logo.svg": "/static/dataplus_logo.9a40897b.svg"
+}
