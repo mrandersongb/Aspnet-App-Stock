@@ -102,6 +102,10 @@ namespace Backend
         {
             // migrate any database changes on startup (includes initial db creation)
             //dataContext.Database.Migrate();
+            //app.UseIISPlatformHandler();
+            //app.UseSpaStaticFiles();
+            app.UseStaticFiles();
+
             app.UseRouting();
 
             // global cors policy
@@ -116,7 +120,7 @@ namespace Backend
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "App";
+                spa.Options.SourcePath = "App/dist";
 
                 if (env.IsDevelopment())
                 {
