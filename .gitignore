@@ -1,2 +1,4 @@
 /bin
 /obj
+/WWWROOT/**
+/node_modules
