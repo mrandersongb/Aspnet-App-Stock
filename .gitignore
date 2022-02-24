@@ -1,4 +1,5 @@
 /bin
 /obj
-/WWWROOT/**
-/node_modules
+/WWWROOT/*
+/node_modules/
+/.vscode
